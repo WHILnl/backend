@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>WHIL Admin</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        body,
+        .container {
+            width: 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        #auth_container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20vh;
+        }
+
+        .login {
+            width: 30vw;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>WHIL Admin Panel</h3>
+    <button id="generate_enroll">Enroll new screen</button>
+    <script type="module">
+        const generateEnrollButton = document.getElementById("generate_enroll")
+
+
+        
+        const res = await fetch("/api/admin/me");
+        const body = await res.json();
+        if (res.status == 401) {
+            window.location.href = body.authorizeAt
+        }
+    </script>
+</body>
+
+</html>

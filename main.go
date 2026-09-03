@@ -2,9 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"embed"
 	"fmt"
-	"io/fs"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -29,8 +27,8 @@ func newProvider(identifier string, secret string) (providers.Provider, error) {
 	}
 }
 
-//go:embed static/*
-var staticFiles embed.FS
+// go:embed static/*
+// var staticFiles embed.FS
 
 func main() {
 	logger.Init("info")
@@ -59,10 +57,15 @@ func main() {
 	}
 	defer db.Close()
 
-	statement, err := db.Prepare(`
+	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS tokens (
 			id integer PRIMARY KEY,
 			token text
+		);
+		CREATE TABLE IF NOT EXISTS sessions (
+			id integer PRIMARY KEY,
+			token text,
+			expiresAt time
 		);
 	`)
 	if err != nil {
@@ -71,7 +74,6 @@ func main() {
 	} else {
 		logger.Info("Successfully created table tokens!")
 	}
-	statement.Exec()
 
 	provider, err := newProvider(cfg.Provider, cfg.ProviderSecret)
 	if err != nil {
@@ -85,11 +87,12 @@ func main() {
 	mainMux := http.NewServeMux()
 	mainMux.Handle("/api/", http.StripPrefix("/api", serverHandler))
 
-	assets, err := fs.Sub(staticFiles, "static")
-	if err != nil {
-		logger.Err(err)
-	}
-	mainMux.Handle("/", http.FileServerFS(assets))
+	// assets, err := fs.Sub(staticFiles, "static")
+	// if err != nil {
+	// 	logger.Err(err)
+	// }
+	// mainMux.Handle("/", http.FileServerFS(assets))
+	mainMux.Handle("/", http.FileServer(http.Dir("static")))
 
 	logger.Info(fmt.Sprintf("Listening on %s", cfg.Port))
 	if err := http.ListenAndServe(cfg.Port, mainMux); err != nil {
