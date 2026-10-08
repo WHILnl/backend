@@ -27,9 +27,6 @@ func newProvider(identifier string, secret string) (providers.Provider, error) {
 	}
 }
 
-// go:embed static/*
-// var staticFiles embed.FS
-
 func main() {
 	logger.Init("info")
 
