@@ -1,11 +1,7 @@
-package providers
+package types
 
 import "time"
 
-type Provider interface {
-	Name() string
-	GetTimetable(userID string) Timetable
-}
 type Lesson struct {
 	Name     string    `json:"name"`
 	Location string    `json:"location"`
