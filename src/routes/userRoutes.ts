@@ -3,7 +3,7 @@ import provider from "../providers/providers.ts";
 
 const router = Router();
 
-router.get("/:user_id", (req: Request, res: Response, next: NextFunction) => {
+router.get("/:user_id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user_id = req.params.user_id;
         if (typeof user_id != "string") {
@@ -11,13 +11,20 @@ router.get("/:user_id", (req: Request, res: Response, next: NextFunction) => {
             return;
         }
 
-        const user = provider.getUser(user_id);
+        const user = await provider.getUser(user_id);
         if (user == undefined) {
-            res.status(404).send();
+            res.status(404).json({
+                status: 404,
+                message: "User not found."
+            });
             return;
         }
 
-        res.json(user);
+        res.json({
+            status: 200,
+            message: "",
+            data: user,
+        });
     } catch (error) {
         next(error);
     }

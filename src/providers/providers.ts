@@ -45,4 +45,8 @@ export function newProvider(provider: string, secret: string) {
     }
 }
 
-export default newProvider(config.provider, config.secret)!;
+const defaultProvider = newProvider(config.provider, config.secret)!;
+if ("init" in defaultProvider) {
+    await defaultProvider.init()
+}
+export default defaultProvider;

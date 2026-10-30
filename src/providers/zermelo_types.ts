@@ -18,7 +18,7 @@ export type ZermeloResponseLiveSchedule = {
         changeDescription: string; // Wijzigingen
         content: string; // Onderwerp
         creator: string; // Docent die de afspraak heeft ingepland
-        end: string; //timestamp: Eindtijd
+        end: number; //timestamp: Eindtijd
         endTimeSlot: number; //integer: Laatste lesuur
         endTimeSlotName: string; // Laatste lesuur
         groupChanged: boolean; // Lesgroep gewijzigd
@@ -30,7 +30,7 @@ export type ZermeloResponseLiveSchedule = {
         onlineLocationUrl: string; // Online locatie
         onlineTeachers: string[]; // Docenten online
         optional: boolean; // Optioneel
-        start: string; //timestamp: Starttijd
+        start: number; //timestamp: Starttijd
         startTimeSlot: number; //integer: Eerste lesuur
         startTimeSlotName: string; // Eerste lesuur
         status: Record<string, any>[]; // Intervalstatussen
@@ -43,4 +43,13 @@ export type ZermeloResponseLiveSchedule = {
     status: Record<string, any>[];
     user: string;
     week: string; // ISO-week `jjjjww`
+}
+
+export type ZermeloResponseStudents = {
+    email: string; // Email
+    // familyMembers: string[]; // Ouders
+    firstName: string; // Voornaam
+    // lastName: string; // Achternaam
+    // prefix: string; // Tussenvoegsel
+    userCode: string; // Leerlingcode
 }

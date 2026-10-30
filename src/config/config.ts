@@ -15,6 +15,11 @@ interface Config {
     admin_session_duration: number;
 
     enroll_code_duration: number;
+
+    school_id: number | undefined;
+    school_year_id: number | undefined;
+
+    student_cache_time: number;
 }
 
 const config: Config = {
@@ -29,6 +34,11 @@ const config: Config = {
     admin_session_duration: parse(process.env.ADMIN_SESSION_DURATION)!,
 
     enroll_code_duration: parse(process.env.ENROLL_CODE_DURATION)!,
+
+    school_id: Number(process.env.SCHOOL_ID),
+    school_year_id: Number(process.env.SCHOOL_YEAR_ID),
+
+    student_cache_time: 30 * 60 * 1000,
 };
 
 export default config;
