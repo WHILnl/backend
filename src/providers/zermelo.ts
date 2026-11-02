@@ -119,13 +119,13 @@ export class ZermeloProvider implements Provider {
         if (config.school_id) {
             schoolYears = schoolYears.filter(it => it.school.id == config.school_id)
             if (schoolYears.length == 0) {
-                throw Error(`No access to a school with id ${config.school_id} or it does not exist`)
+                throw Error(`No access to a school with id '${config.school_id}' or it does not exist`)
             }
         }
         if (config.school_year_id) {
             schoolYears = schoolYears.filter(it => it.id == config.school_year_id);
             if (schoolYears.length == 0) {
-                throw Error(`No access to a school year with id ${config.school_year_id} or it does not exist`)
+                throw Error(`No access to a school year with id '${config.school_year_id}' or it does not exist`)
             }
         }
         if (schoolYears.length > 1) {

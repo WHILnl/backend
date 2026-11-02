@@ -43,7 +43,7 @@ export function newProvider(provider: string, secret: string) {
             return new ZermeloProvider(secret);
 
         default:
-            throw Error(`Provider ${provider} does not exist.`);
+            throw Error(`Provider '${provider}' does not exist.`);
     }
 }
 

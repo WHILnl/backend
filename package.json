@@ -5,6 +5,9 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
+    "run-docker": "docker run --rm --env-file .env -p 8080:8080 whil-backend",
+    "build-docker": "docker build -t whil-backend .",
+
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'node' src/server.ts",
