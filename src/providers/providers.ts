@@ -10,7 +10,7 @@ class HelloWorldProvider implements Provider {
         this.secret = secret;
     }
 
-    getTimetable(user_id: string): Timetable | undefined {
+    async getTimetable(user_id: string): Promise<Timetable | undefined> {
         if (user_id == "daaag") {
             return
         }
@@ -21,13 +21,15 @@ class HelloWorldProvider implements Provider {
             lessons: [],
         }
     }
-    getUser(user_id: string): User | undefined {
+    async getUser(user_id: string): Promise<User | undefined> {
         if (user_id == "daaag") {
             return
         }
 
         return {
             user_id: user_id,
+            provider: HelloWorldProvider.provider,
+            email: "",
             first_name: "Wereld",
         }
     }
