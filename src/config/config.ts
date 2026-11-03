@@ -21,6 +21,10 @@ interface Config {
     school_year_id: number | undefined;
 
     student_cache_time: number;
+
+    // unconfigurable
+    device_token_length: number;
+    enroll_code_length: number;
 }
 
 const config: Config = {
@@ -41,6 +45,11 @@ const config: Config = {
     school_year_id: Number(process.env.SCHOOL_YEAR_ID),
 
     student_cache_time: 30 * 60 * 1000,
+
+    // unconfigurable
+    device_token_length: 64,
+    enroll_code_length: 3,
+    
 };
 console.log(config.device_token_timeout);
 

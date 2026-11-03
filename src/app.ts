@@ -2,6 +2,7 @@ import express from 'express';
 
 import timetableRoutes from './routes/timetableRoutes.ts';
 import userRoutes from './routes/userRoutes.ts';
+import enrollRoutes from './routes/enrollRoutes.ts'
 
 import { errorHandler } from './middlewares/errorHandler.ts';
 import { authHandler } from './middlewares/authHandler.ts';
@@ -17,6 +18,7 @@ app.use(express.json());
 // Routes
 app.use('/api/timetable', timetableRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/enroll', enrollRoutes)
 
 // Global error handler (should be after routes)
 app.use(errorHandler);
