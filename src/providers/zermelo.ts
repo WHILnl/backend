@@ -70,7 +70,7 @@ export class ZermeloProvider implements Provider {
     }
     this.baseURL = match[1];
     this.token = match[2];
-    log(`using baseURL '${this.baseURL}'`);
+    log(`Created with baseURL '${this.baseURL}'`);
   }
   async init() {
     log('Initialising');

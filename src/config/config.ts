@@ -51,6 +51,5 @@ const config: Config = {
   device_token_length: 64,
   enroll_code_length: 3,
 };
-console.log(config.device_token_timeout);
 
 export default config;
