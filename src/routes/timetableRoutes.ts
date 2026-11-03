@@ -1,6 +1,7 @@
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import provider from "../providers/providers.ts";
 
+// /api/timetable
 const router = Router();
 
 router.get("/:user_id", async (req: Request, res: Response, next: NextFunction) => {
