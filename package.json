@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "parse-duration": "^2.1.9",
+    "prettier": "^3.9.10",
     "sqlite3": "^6.0.1"
   }
 }
