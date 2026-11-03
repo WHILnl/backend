@@ -49,7 +49,7 @@ const config: Config = {
 
   // unconfigurable
   device_token_length: 64,
-  enroll_code_length: 3,
+  enroll_code_length: 6,
 };
 
 export default config;
