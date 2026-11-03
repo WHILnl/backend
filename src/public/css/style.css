@@ -1,0 +1,117 @@
+@import url('/vendor/catppuccin/catppuccin.css');
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--ctp-mocha-base);
+  color: var(--ctp-mocha-text);
+}
+
+/* Navigation bar styling */
+
+.navbar {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--ctp-mocha-crust);
+  display: flex;
+}
+
+.navbar a {
+  display: block;
+  color: var(--ctp-mocha-text);
+  text-align: center;
+  padding: 18px 20px;
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  background-color: var(--ctp-mocha-surface0);
+}
+
+/* General body styling */
+
+main {
+  padding: 20px 10px;
+}
+#app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+h1.squish-bottom {
+  margin-bottom: 0;
+}
+.desc {
+  margin-top: 0;
+  color: var(--ctp-mocha-subtext0);
+}
+
+/* Footer styling */
+
+/* 
+    Component styling 
+*/
+
+/* card */
+.card {
+  width: 95%;
+  padding: 15px 0;
+  border-radius: 15px;
+  background-color: var(--ctp-mocha-crust);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* table */
+table {
+  width: 95%;
+  margin: 10px 0;
+  border-radius: 15px;
+  background-color: var(--ctp-mocha-surface0);
+  overflow: hidden;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  border-spacing: 0;
+  table-layout: auto;
+  &.fixed {
+    table-layout: fixed;
+  }
+
+  thead tr th {
+    background-color: var(--ctp-mocha-mantle);
+    padding-top: 15px;
+    text-align: left;
+  }
+  tbody tr:nth-child(even) td {
+    background-color: var(--ctp-mocha-surface1);
+  }
+  tr {
+    td,
+    th {
+      padding: 10px;
+
+      &:first-child {
+        padding-left: 15px;
+      }
+      &:last-child {
+        padding-right: 15px;
+      }
+    }
+    th {
+      white-space: nowrap;
+    }
+    td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
