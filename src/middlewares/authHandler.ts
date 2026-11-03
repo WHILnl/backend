@@ -30,6 +30,7 @@ export const authHandler = async (
     const valid: boolean = await helpers.validateTokenAndUpdateLastUsed(token);
     if (!valid) {
         unauthenticated(res);
+        return
     }
 
     next();
