@@ -9,7 +9,8 @@ db.run(`
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         token TEXT,
         issuedAt INTEGER, -- Unix epoch timestamp
-        lastUsed INTEGER  -- Unix epoch timestamp
+        lastUsed INTEGER,  -- Unix epoch timestamp
+        revokedAt INTEGER -- Unix epoch timestamp
     );
 `);
 
@@ -22,14 +23,27 @@ export const helpers = {
                     return reject();
                 }
                 if (row == undefined) {
-                    resolve(false);
+                    return resolve(false);
+                    
                 }
-                resolve(Date.now() / 1000 - row.lastUsed < config.device_token_timeout / 1000);
+
+                if (Date.now() / 1000 - row.lastUsed > config.device_token_timeout / 1000) {
+                    resolve(false);
+                    db.run('UPDATE device_tokens SET revoked = true WHERE token = ?', token, (err: Error | null, row: unknown) => { // TODO: This should be done by some background process that revokes "expired" tokens every half hour or smth (or faster if DEVICE_TOKEN_TIMEOUT is small)
+                        if (err) {
+                            console.error(err);
+                        }
+                    });
+                } else {
+                    resolve(row.revoked == null);
+                };
+                reject("Reached unreachable code for this promise")
             });
         });
     },
     async updateTokenLastUsed(token: string) {
-        db.run('UPDATE device_tokens SET lastUsed = unixepoch("now") WHERE token = ?', token, (err: Error | null, row: unknown) => {
+        // Ensure we do not modify data from revoked tokens
+        db.run('UPDATE device_tokens SET lastUsed = unixepoch("now") WHERE token = ? AND revoked = NULL', token, (err: Error | null, row: unknown) => {
             if (err) {
                 console.error(err);
             }
