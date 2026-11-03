@@ -11,8 +11,11 @@ export const errorHandler = (
     next: NextFunction
 ) => {
     console.error(err);
-    res.status(err.status || 500).json({
-        status: err.status || 500,
-        message: err.message || 'Internal Server Error',
-    });
+
+    if (!res.headersSent) {
+        res.status(err.status || 500).json({
+            status: err.status || 500,
+            message: err.message || 'Internal Server Error',
+        });
+    }
 };
