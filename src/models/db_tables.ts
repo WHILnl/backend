@@ -3,5 +3,6 @@ export type device_token = {
     token: string; // TEXT,
     issuedAt: number; //INTEGER, -- Unix epoch timestamp
     lastUsed: number;  //INTEGER
-    revoked: number|null;
+    revokedAt: number | null;
+}
 }

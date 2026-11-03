@@ -27,7 +27,7 @@ export const authHandler = async (
         unauthenticated(res, `Unsuported authentication scheme '${type}', please use 'Bearer' scheme`)
     }
     const token: string = authHeader.substring(firstSpace+1);
-    const valid: boolean = await helpers.validateTokenAndUpdateLastUsed(token);
+    const valid: boolean = await helpers.device_token.validateAndUpdateLastUsed(token);
     if (!valid) {
         unauthenticated(res);
         return
