@@ -11,29 +11,39 @@ import userRoutes from './routes/userRoutes.ts';
 
 
 import { errorHandler } from './middlewares/errorHandler.ts';
-import { authHandler } from './middlewares/authHandler.ts';
+import { deviceAuthHandler } from './middlewares/deviceAuthHandler.ts';
 
-const apiRouter = express.Router();
+const deviceApiRouter = express.Router();
 {
   // Api router
   // Check authentication
-  apiRouter.use(authHandler);
+  deviceApiRouter.use(deviceAuthHandler);
 
   // Only parse after authentication
-  apiRouter.use(express.json());
+  deviceApiRouter.use(express.json());
 
   // Device API routes
-  apiRouter.use('/api/timetable', timetableRoutes);
-  apiRouter.use('/api/user', userRoutes);
-  apiRouter.use('/api/enroll', enrollRoutes);
+  deviceApiRouter.use('/timetable', timetableRoutes);
+  deviceApiRouter.use('/user', userRoutes);
+  deviceApiRouter.use('/enroll', enrollRoutes);
+}
+const adminApiRouter = express.Router();
+{
+  // Api router
+  // Check authentication
+  // adminApiRouter.use(adminAuthHandler);
+
+  // Only parse after authentication
+  adminApiRouter.use(express.json());
   // Admin API routes
-  apiRouter.use('/api/admin', adminRoutes);
+  adminApiRouter.use('/', adminRoutes);
 }
 
 const app = express();
 
-// use api router
-app.use('/api', apiRouter);
+// use api routers
+app.use('/api/admin', adminApiRouter);
+app.use('/api', deviceApiRouter);
 
 // admin frontend
 app.set('view engine', 'ejs');

@@ -9,7 +9,7 @@ function unauthenticated(res: Response, msg?: string) {
   });
 }
 
-export const authHandler = async (
+export const deviceAuthHandler = async (
   req: Request,
   res: Response,
   next: NextFunction,
