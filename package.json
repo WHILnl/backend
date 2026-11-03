@@ -7,7 +7,6 @@
   "scripts": {
     "run-docker": "docker run --rm --env-file .env -p 8080:8080 whil-backend",
     "build-docker": "docker build -t whil-backend .",
-
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'node' src/server.ts",
@@ -35,6 +34,7 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "parse-duration": "^2.1.9"
+    "parse-duration": "^2.1.9",
+    "sqlite3": "^6.0.1"
   }
 }

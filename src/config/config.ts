@@ -15,6 +15,7 @@ interface Config {
     admin_session_duration: number;
 
     enroll_code_duration: number;
+    device_token_timeout: number;
 
     school_id: number | undefined;
     school_year_id: number | undefined;
@@ -34,11 +35,13 @@ const config: Config = {
     admin_session_duration: parse(process.env.ADMIN_SESSION_DURATION)!,
 
     enroll_code_duration: parse(process.env.ENROLL_CODE_DURATION)!,
+    device_token_timeout: parse(process.env.DEVICE_TOKEN_TIMEOUT) || 60 * 60 * 24 * 31, // 1 month (31 days) in seconds
 
     school_id: Number(process.env.SCHOOL_ID),
     school_year_id: Number(process.env.SCHOOL_YEAR_ID),
 
     student_cache_time: 30 * 60 * 1000,
 };
+console.log(config.device_token_timeout);
 
 export default config;
