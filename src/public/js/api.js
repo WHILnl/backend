@@ -37,6 +37,16 @@ const device_token = {
     return data;
   },
   /**
+   * Delete a token
+   * @param {number} id Id of the token to delete
+   */
+  delete: async (id) => {
+    const res = await fetch(`/api/admin/device_token/${id}`, {
+      method: 'DELETE',
+    });
+    return res.ok;
+  },
+  /**
    * Revoke a token
    * @param {number} id Id of the token to revoke
    * @returns {Promise<boolean>} If an ok response was received from the server 

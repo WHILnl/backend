@@ -3,6 +3,7 @@
 
 import {
   createCallbackButton,
+  createCallbackButtons,
   createTable,
   updateTable,
 } from './components/table.js';
@@ -40,7 +41,7 @@ const deviceTokenTable = createTable({
     { value: 'Issued At', width: 12.5, mobile: false },
     { value: 'Last Used', width: 12.5, mobile: false },
     { value: 'Revoked At', width: 12.5, mobile: false },
-    { value: refreshDeviceTokenTableButton, width: 5.75 },
+    { value: refreshDeviceTokenTableButton, width: 10 },
   ],
 });
 
@@ -60,13 +61,23 @@ async function updateDeviceTokenTable() {
     token.revokedAt
       ? new Date(token.revokedAt * 1000).toLocaleString()
       : 'Valid',
-    createCallbackButton(
-      'Revoke',
-      token.revokedAt ? '!disabled' : 'action-danger',
-      async () => {
-        await device_token.revoke(token.id);
-        updateDeviceTokenTable();
-      },
+    createCallbackButtons(
+      [
+        'Revoke',
+        token.revokedAt ? '!disabled' : 'action-danger',
+        async () => {
+          await device_token.revoke(token.id);
+          updateDeviceTokenTable();
+        },
+      ],
+      [
+        'Delete',
+        'action-danger',
+        async () => {
+          await device_token.delete(token.id);
+          updateDeviceTokenTable();
+        },
+      ],
     ),
   ]);
 

@@ -77,6 +77,16 @@ h1.squish-bottom {
   color: var(--ctp-mocha-subtext0);
 }
 
+.self-align-right {
+  display: block;
+  align-self: right;
+}
+.button-container {
+  display: flex;
+  justify-content: end;
+  gap: 0.25em;
+}
+
 @media screen and (max-width: 10000px) {
   .mobile-hidden {
     display: none;

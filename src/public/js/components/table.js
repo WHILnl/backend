@@ -6,7 +6,7 @@
  * @param {string} className Space separated string of classes to assign to the button
  * @param {EventListenerOrEventListenerObject} callback On click callback
  */
-function createCallbackButton(inner, className, callback) {
+function _createCallbackButton(inner, className, callback) {
   const el = document.createElement('button');
 
   el.innerText = inner;
@@ -30,6 +30,31 @@ function createCallbackButton(inner, className, callback) {
   el.addEventListener('click', callback);
 
   return el;
+}
+/**
+ * Create a button that calls a callback when clicked
+ * @param {...[inner:string,className: string,callback:EventListenerOrEventListenerObject]} buttons
+ */
+function createCallbackButtons(...buttons) {
+  const spanEl = document.createElement('span');
+  spanEl.classList.add('button-container');
+
+  for (const [inner, className, callback] of buttons) {
+    const el = _createCallbackButton(inner, className, callback);
+    el.classList.add('self-align-right');
+    spanEl.appendChild(el);
+  }
+
+  return spanEl;
+}
+/**
+ * Create a button that calls a callback when clicked
+ * @param {string} inner Text on the button
+ * @param {string} className Space separated string of classes to assign to the button
+ * @param {EventListenerOrEventListenerObject} callback On click callback
+ */
+function createCallbackButton(inner, className, callback) {
+  return createCallbackButtons([inner, className, callback]);
 }
 
 /**
@@ -149,4 +174,4 @@ function updateTable(wrapperDiv, data) {
   }
 }
 
-export { createCallbackButton, createTable, updateTable };
+export { createCallbackButton, createCallbackButtons, createTable, updateTable };
