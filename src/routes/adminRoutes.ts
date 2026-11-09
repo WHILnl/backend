@@ -202,7 +202,7 @@ router.delete('/enroll_code/:id', (async (req, res, next) => {
     db.get(
       'DELETE FROM enroll_codes WHERE id = ?',
       id,
-      (err, row: device_token) => {
+      (err) => {
         if (err) {
           console.error(err);
           return res.status(500).json({
@@ -213,8 +213,7 @@ router.delete('/enroll_code/:id', (async (req, res, next) => {
 
         res.status(200).json({
           status: 200,
-          message: '',
-          data: row,
+          message: 'Deleted.',
         });
       },
     );
