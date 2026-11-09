@@ -61,6 +61,37 @@ router.get('/device_token/:id', (async (req, res, next) => {
     next(error);
   }
 }) satisfies RequestHandler);
+router.delete('/device_token/:id', (async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({
+        status: 400,
+        message: ':id must be a number.',
+      });
+    }
+    db.get(
+      'DELETE FROM device_tokens WHERE id = ?',
+      id,
+      (err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({
+            status: 500,
+            message: 'Internal Server Error',
+          });
+        }
+
+        res.status(200).json({
+          status: 200,
+          message: 'Deleted.',
+        });
+      },
+    );
+  } catch (error) {
+    next(error);
+  }
+}) satisfies RequestHandler);
 router.post('/device_token/:id/revoke', (async (req, res, next) => {
   try {
     const id = Number(req.params.id);
