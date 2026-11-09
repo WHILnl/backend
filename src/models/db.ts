@@ -141,6 +141,10 @@ export const helpers = {
           'INSERT INTO device_tokens (token, issuedAt, lastUsed) VALUES (?, unixepoch("now"), unixepoch("now"));',
           token,
           function (err: Error | null) {
+            if (err) {
+              console.error(err);
+              return reject();
+            }
             db.get(
               'SELECT * FROM device_tokens WHERE token = ? AND id = ?',
               [token, this.lastID],
