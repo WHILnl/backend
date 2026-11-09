@@ -21,7 +21,8 @@ function generateSecureToken(length: number) {
 
 export const db = new sqlite3.Database('sqlite.db');
 
-db.run(`
+db.run(
+  `
     CREATE TABLE IF NOT EXISTS device_tokens (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         token TEXT UNIQUE,
@@ -29,8 +30,15 @@ db.run(`
         lastUsed INTEGER,  -- Unix epoch timestamp
         revokedAt INTEGER -- Unix epoch timestamp
     );
-`);
-db.run(`
+`,
+  (err) => {
+    if (err) {
+      console.error(`Could not create table device_tokens: ${err}`);
+    }
+  },
+);
+db.run(
+  `
     CREATE TABLE IF NOT EXISTS enroll_codes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         code TEXT UNIQUE, -- 6 digit code
@@ -38,7 +46,32 @@ db.run(`
         issuedAt INTEGER, -- Unix epoch timestamp
         validUntil INTEGER -- Unix epoch timestamp
     );
-`);
+`,
+  (err) => {
+    if (err) {
+      console.error(`Could not create table enroll_codes: ${err}`);
+    }
+  },
+);
+  db.run(
+    `
+    CREATE TRIGGER IF NOT EXISTS prevent_revoked_at_unset
+      BEFORE UPDATE OF revokedAt ON device_tokens
+      WHEN OLD.revokedAt IS NOT NULL AND
+        OLD.revokedAt != NEW.revokedAt
+      BEGIN
+      	SELECT
+        	RAISE (ABORT, 'device_tokens.revokedAt may not be set more than once');
+      END;
+`,
+    (err) => {
+      if (err) {
+        console.error(
+        `Could not create trigger prevent_revoked_at_unset_on_device_tokens: ${err}`,
+        );
+      }
+    },
+);
 
 export const helpers = {
   device_token: {
