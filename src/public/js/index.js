@@ -1,3 +1,4 @@
+//@ts-check
 // views/layouts/main.ejs
 
 import {
@@ -7,9 +8,24 @@ import {
 } from './components/table.js';
 import { device_token, enroll_code } from './api.js';
 
-const appContainer = document.getElementById('app');
-const deviceTokenContainer = document.getElementById('device_token_card');
-const enrollCodeContainer = document.getElementById('enroll_code_card');
+/**
+ * @param {string} id
+ * @returns {HTMLDivElement}
+ */
+function getDivById(id) {
+  const el = document.getElementById(id);
+  if (el instanceof HTMLDivElement) {
+    return el;
+  } else if (el != null) {
+    throw Error(`Element with id '${id}' is of type ${el.constructor.name}.`);
+  } else {
+    throw Error(`Element with id '${id}' does not exist.`);
+  }
+}
+
+const appContainer = getDivById('app');
+const deviceTokenContainer = getDivById('device_token_card');
+const enrollCodeContainer = getDivById('enroll_code_card');
 
 // #region device tokens
 const refreshDeviceTokenTableButton = createCallbackButton(
@@ -19,37 +35,22 @@ const refreshDeviceTokenTableButton = createCallbackButton(
 );
 const deviceTokenTable = createTable({
   header: [
-    'Id',
-    'Token',
-    'Issued At',
-    'Last Used',
-    'Revoked At',
-    refreshDeviceTokenTableButton,
-  ],
-  fixed: true,
-  colgroup: [
-    { style: 'width:5%;' },
-    {},
-    { style: 'width:20%;' },
-    { style: 'width:20%;' },
-    { style: 'width:20%;' },
-    { style: 'width:8.5%' },
+    { value: 'Id', width: 4 },
+    { value: 'Token' },
+    { value: 'Issued At', width: 12.5, mobile: false },
+    { value: 'Last Used', width: 12.5, mobile: false },
+    { value: 'Revoked At', width: 12.5, mobile: false },
+    { value: refreshDeviceTokenTableButton, width: 5.75 },
   ],
 });
+
 deviceTokenContainer.appendChild(deviceTokenTable);
 
 async function updateDeviceTokenTable() {
-  const res = await fetch('/api/admin/device_token');
-  if (!res.ok) {
-    console.error(
-      'Could not update device token table:',
-      res.status,
-      res.statusText,
-    );
+  const data = await device_token.getAll();
+  if (!data) {
     return;
   }
-  const body = await res.json();
-  const data = body.data;
 
   const rows = data.map((token) => [
     token.id,
@@ -81,37 +82,21 @@ const refreshEnrollCodeTableButton = createCallbackButton(
 );
 const enrollCodeTable = createTable({
   header: [
-    'Id',
-    'Code',
-    'Remaining Uses',
-    'Issued At',
-    'Valid Until',
-    refreshEnrollCodeTableButton,
-  ],
-  fixed: true,
-  colgroup: [
-    { style: 'width:5%;' },
-    {},
-    { style: 'width:16%;' },
-    { style: 'width:20%;' },
-    { style: 'width:20%;' },
-    { style: 'width:8.5%' },
+    { value: 'Id', width: 4 },
+    { value: 'Code' },
+    { value: 'Remaining Uses' },
+    { value: 'Issued At', width: 12.5 },
+    { value: 'Valid Until', width: 12.5 },
+    { value: refreshEnrollCodeTableButton, width: 5.75 },
   ],
 });
 enrollCodeContainer.appendChild(enrollCodeTable);
 
 async function updateEnrollCodeTable() {
-  const res = await fetch('/api/admin/enroll_code');
-  if (!res.ok) {
-    console.error(
-      'Could not update enroll code table:',
-      res.status,
-      res.statusText,
-    );
+  const data = await enroll_code.getAll();
+  if (!data) {
     return;
   }
-  const body = await res.json();
-  const data = body.data;
 
   const rows = data.map((token) => [
     token.id,

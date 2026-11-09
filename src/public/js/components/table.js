@@ -1,12 +1,10 @@
-const propMap = {
-  class: 'className',
-};
+//@ts-check
 
 /**
  * Create a button that calls a callback when clicked
  * @param {string} inner Text on the button
  * @param {string} className Space separated string of classes to assign to the button
- * @param {function} callback On click callback
+ * @param {EventListenerOrEventListenerObject} callback On click callback
  */
 function createCallbackButton(inner, className, callback) {
   const el = document.createElement('button');
@@ -14,7 +12,17 @@ function createCallbackButton(inner, className, callback) {
   el.innerText = inner;
 
   if (className[0] == '!') {
-    el[className.substring(1)] = true;
+    switch (className.substring(1)) {
+      case 'disabled':
+        el.disabled = true;
+        break;
+
+      default:
+        console.warn(
+          `Ignoring unknown button property '${className.substring(1)}'`,
+        );
+        break;
+    }
   } else {
     el.className = className;
   }
@@ -25,75 +33,99 @@ function createCallbackButton(inner, className, callback) {
 }
 
 /**
- * Create a table component
- * @param table Data about the table
- * @param {string[]} table.header Headers of the table
- * @param {string[][]} [table.data] Data rows for the table
- *
- * @return {string} table
+ * @typedef TableHeader
+ * @prop {string|HTMLElement} value Value of the header cell. Can be a string or any HTMLElement.
+ * @prop {number|string} [width] Width of the <col>. If a number is provided `em` unit is used by default.
+ * @prop {boolean} [mobile=true] Display collumn on mobile
+ * @prop {string} [colStyle] Additional styling for the <col>
+ * 
+ * @typedef {(string|number|HTMLElement)[]} TableData
+
+ * 
+ * @typedef TableObject
+ * @prop {TableHeader[]} header Headers of the table
+ * @prop {TableData[]} [data] Data rows for the table
  */
-function createTable(table) {
+
+/**
+ * Create a table component
+ * @overload
+ * @param {TableObject} table Data about the table
+ * @return {HTMLDivElement} The wrapper element that was provided, will not be a div if no div was provided
+ */
+/**
+ * Create a table component
+ * @overload
+ * @param {TableObject} table Data about the table
+ * @param {HTMLElement} [container] Element to be turned into a wrapper
+ * @return {HTMLElement} The wrapper element that was provided, will not be a div if no div was provided
+ */
+/**
+ * @param {TableObject} table Data about the table
+ * @param {HTMLElement} [container] Element to be turned into a wrapper
+ * @return {HTMLElement} The wrapper element that was provided, will not be a div if no div was provided
+ */
+function createTable(table, container) {
+  const wrapperDiv = container ?? document.createElement('div');
+  wrapperDiv.classList.add('table-wrapper');
+
   const tableDiv = document.createElement('table');
-  tableDiv.classList.toggle('fixed', table.fixed == true);
-  if (table.colgroup) {
-    const colgroup = document.createElement('colgroup');
-    tableDiv.appendChild(colgroup);
-    let totalSpan = 0;
-    for (let colData of table.colgroup) {
-      let span = 1;
-      const col = document.createElement('col');
-      colgroup.appendChild(col);
+  tableDiv.classList.add('fixed');
+  wrapperDiv.appendChild(tableDiv);
 
-      for (let property in colData) {
-        col[propMap[property] || property] = colData[property];
-        if (property == 'span') {
-          span = Number(colData[property]);
-        }
-      }
-      totalSpan += span;
-    }
-    for (let i = totalSpan; i < table.header.length; i++) {
-      const col = document.createElement('col');
-      colgroup.appendChild(col);
-    }
-  }
-  {
-    const thead = document.createElement('thead');
-    tableDiv.appendChild(thead);
-    const tRow = document.createElement('tr');
-    thead.appendChild(tRow);
-    for (let header of table.header) {
-      const tHeader = document.createElement('th');
-      tRow.appendChild(tHeader);
+  const colgroup = document.createElement('colgroup');
+  tableDiv.appendChild(colgroup);
 
-      if (header instanceof HTMLElement) {
-        tHeader.replaceChildren(header);
-      } else {
-        tHeader.innerText = header;
-      }
+  const thead = document.createElement('thead');
+  tableDiv.appendChild(thead);
+  const tRow = document.createElement('tr');
+  thead.appendChild(tRow);
+
+  for (let header of table.header) {
+    const col = document.createElement('col');
+    colgroup.appendChild(col);
+    if (header.width && typeof header.width == 'number') {
+      col.style = `width: ${header.width}em;`;
+    } else if (header.width) {
+      col.style = `wdith: ${header.width};`;
+    }
+    if (header.colStyle) {
+      col.style += header.colStyle;
+    }
+
+    const tHeader = document.createElement('th');
+    tRow.appendChild(tHeader);
+    if (header.value instanceof HTMLElement) {
+      tHeader.replaceChildren(header.value);
+    } else {
+      tHeader.innerText = header.value;
     }
   }
-  {
-    const tbody = document.createElement('tbody');
-    tableDiv.appendChild(tbody);
-  }
+
+  const tbody = document.createElement('tbody');
+  tableDiv.appendChild(tbody);
+
   if (table.data) {
-    updateTable(tableDiv, table.data);
+    updateTable(wrapperDiv, table.data);
   }
 
-  return tableDiv;
+  return wrapperDiv;
 }
 
 /**
  * Update an already created table with new data
- * @param {HTMLDivElement} tableDiv The table to update
- * @param {"table"} tableDiv.component
- * @param {string[][]} data The data to put into the table
+ * @param {HTMLElement} wrapperDiv The table to update
+ * @param {TableData[]} data The data to put into the table
  */
-function updateTable(tableDiv, data) {
-  if (!(tableDiv instanceof HTMLTableElement)) {
-    throw Error('Invalid table element');
+function updateTable(wrapperDiv, data) {
+  if (!(
+    wrapperDiv.childElementCount == 1 &&
+    wrapperDiv.children[0] instanceof HTMLTableElement
+  )) {
+    throw Error('Invalid table component');
   }
+  const tableDiv = wrapperDiv.children[0];
+
   if (tableDiv.tBodies.length == 0) {
     const tBody = document.createElement('tbody');
     tableDiv.appendChild(tBody);
@@ -110,6 +142,7 @@ function updateTable(tableDiv, data) {
       if (cell instanceof HTMLElement) {
         tData.replaceChildren(cell);
       } else {
+        // @ts-ignore
         tData.innerText = cell;
       }
     }

@@ -77,8 +77,12 @@ h1.squish-bottom {
   color: var(--ctp-mocha-subtext0);
 }
 
-/* #endregion */
-/* #region Footer styling */
+@media screen and (max-width: 10000px) {
+  .mobile-hidden {
+    display: none;
+  }
+}
+
 /* #endregion */
 
 /* 
@@ -100,14 +104,17 @@ h1.squish-bottom {
 }
 /* #endregion */
 /* #region table */
-table {
+.table-wrapper {
   width: 95%;
   margin: 10px 0;
+  overflow-x: auto;
   border-radius: 15px;
+}
+table {
+  width: 100%;
   background-color: var(--ctp-mocha-surface0);
-  overflow: hidden;
 
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
 
   border-spacing: 0;
