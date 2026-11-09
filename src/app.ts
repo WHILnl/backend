@@ -47,7 +47,7 @@ const adminApiRouter = express.Router();
 
   // Only parse after authentication
   adminApiRouter.use(express.json());
-  
+
   // Admin API routes
   adminApiRouter.use('/', adminRoutes);
 

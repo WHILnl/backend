@@ -13,8 +13,8 @@ function createCallbackButton(inner, className, callback) {
 
   el.innerText = inner;
 
-  if (className[0] == "!") {
-    el[className.substring(1)] = true
+  if (className[0] == '!') {
+    el[className.substring(1)] = true;
   } else {
     el.className = className;
   }

@@ -41,7 +41,11 @@ deviceTokenContainer.appendChild(deviceTokenTable);
 async function updateDeviceTokenTable() {
   const res = await fetch('/api/admin/device_token');
   if (!res.ok) {
-    console.error('Could not update device token table:', res.status, res.statusText);
+    console.error(
+      'Could not update device token table:',
+      res.status,
+      res.statusText,
+    );
     return;
   }
   const body = await res.json();
@@ -99,7 +103,11 @@ enrollCodeContainer.appendChild(enrollCodeTable);
 async function updateEnrollCodeTable() {
   const res = await fetch('/api/admin/enroll_code');
   if (!res.ok) {
-    console.error('Could not update enroll code table:', res.status, res.statusText);
+    console.error(
+      'Could not update enroll code table:',
+      res.status,
+      res.statusText,
+    );
     return;
   }
   const body = await res.json();
@@ -111,14 +119,10 @@ async function updateEnrollCodeTable() {
     token.usesRemaining >= 0 ? token.usesRemaining : 'Unlimited',
     new Date(token.issuedAt * 1000).toLocaleString(),
     new Date(token.validUntil * 1000).toLocaleString(),
-    createCallbackButton(
-      'Delete',
-      'action-danger',
-      async () => {
-        await enroll_code.delete(token.id);
-        updateEnrollCodeTable();
-      },
-    ),
+    createCallbackButton('Delete', 'action-danger', async () => {
+      await enroll_code.delete(token.id);
+      updateEnrollCodeTable();
+    }),
   ]);
 
   updateTable(enrollCodeTable, rows);
