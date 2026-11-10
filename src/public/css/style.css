@@ -87,6 +87,21 @@ h1.squish-bottom {
   gap: 0.25em;
 }
 
+.form_input {
+  padding: 0.5em 0.55em;
+  color: var(--ctp-mocha-text);
+  background-color: transparent;
+  
+  border-radius: 0.4em;
+  border-width: 1px;
+  border-style: ;
+  border-color: var(--ctp-mocha-surface0);
+  --input-duration-border-color: var(--ctp-mocha-surface1);
+
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+}
+
 @media screen and (max-width: 10000px) {
   .mobile-hidden {
     display: none;

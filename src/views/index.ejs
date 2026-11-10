@@ -8,9 +8,36 @@
   <div id="enroll_code_card" class="card">
     <h1 class="squish-bottom">Enroll codes</h1>
     <p class="desc">
-      These codes are used to enroll a new screen or scanner. Press `view` to show a scannable code to enroll a device.
+      These codes are used to enroll a new screen or scanner. Press `view` to
+      show a scannable code to enroll a device.
     </p>
+    <form class="enroll_code_create">
+      <label for="">Uses</label>
+      <input
+        id="enroll_code_uses_input"
+        class="form_input"
+        placeholder="Uses"
+        type="text"
+        value="1"
+        min="0"
+        pattern="[0-9]+|Infinite"
+        required
+      />
+      <input-duration
+        id="enroll_code_duration_input"
+        class="form_input"
+        no-seconds
+        no-microseconds
+      ></input-duration>
+      <button type="submit">Create</button>
+    </form>
   </div>
 </div>
+
+<!-- https://github.com/StephanLuis/input-duration -->
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/input-duration/+esm"
+></script>
 
 <script type="module" src="/js/index.js"></script>

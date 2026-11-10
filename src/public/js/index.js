@@ -132,3 +132,28 @@ async function updateEnrollCodeTable() {
 
 updateDeviceTokenTable();
 updateEnrollCodeTable();
+
+// #region Enroll code creation form
+const durationInput = getElementById(
+  'enroll_code_uses_input',
+  HTMLInputElement,
+);
+
+durationInput?.addEventListener('focus', (e) => {
+  const t = /** @type {HTMLInputElement} */ (e.target);
+  // @ts-ignore
+  if (isNaN(t.value)) {
+    t.type = 'number';
+    t.value = "0";
+  } else {
+    t.type = 'number';
+  }
+});
+durationInput?.addEventListener('blur', (e) => {
+  const t = /**@type{HTMLInputElement}*/ (e.target);
+  // @ts-ignore
+  if (t.value == 0 || isNaN(t.value)) {
+    t.type = 'text';
+    t.value = 'Infinite';
+  }
+});
