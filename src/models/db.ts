@@ -3,8 +3,9 @@ import type { device_token, enroll_code } from './db_tables.ts';
 import config from '../config/config.ts';
 import crypto from 'crypto';
 
-function generateSecureToken(length: number) {
-  const alphabet =
+function generateSecureToken(length: number, alphabet?: string) {
+  alphabet =
+    alphabet ||
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const alphabetLength = alphabet.length;
   const randomBytes = crypto.randomBytes(length);
@@ -21,7 +22,8 @@ function generateSecureToken(length: number) {
 
 export const db = new sqlite3.Database('sqlite.db');
 
-db.run(`
+db.run(
+  `
     CREATE TABLE IF NOT EXISTS device_tokens (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         token TEXT UNIQUE,
@@ -29,8 +31,15 @@ db.run(`
         lastUsed INTEGER,  -- Unix epoch timestamp
         revokedAt INTEGER -- Unix epoch timestamp
     );
-`);
-db.run(`
+`,
+  (err) => {
+    if (err) {
+      console.error(`Could not create table device_tokens: ${err}`);
+    }
+  },
+);
+db.run(
+  `
     CREATE TABLE IF NOT EXISTS enroll_codes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         code TEXT UNIQUE, -- 6 digit code
@@ -38,7 +47,32 @@ db.run(`
         issuedAt INTEGER, -- Unix epoch timestamp
         validUntil INTEGER -- Unix epoch timestamp
     );
-`);
+`,
+  (err) => {
+    if (err) {
+      console.error(`Could not create table enroll_codes: ${err}`);
+    }
+  },
+);
+db.run(
+  `
+    CREATE TRIGGER IF NOT EXISTS prevent_revoked_at_unset
+      BEFORE UPDATE OF revokedAt ON device_tokens
+      WHEN OLD.revokedAt IS NOT NULL AND
+        OLD.revokedAt != NEW.revokedAt
+      BEGIN
+      	SELECT
+        	RAISE (ABORT, 'device_tokens.revokedAt may not be set more than once');
+      END;
+`,
+  (err) => {
+    if (err) {
+      console.error(
+        `Could not create trigger prevent_revoked_at_unset_on_device_tokens: ${err}`,
+      );
+    }
+  },
+);
 
 export const helpers = {
   device_token: {
@@ -105,9 +139,13 @@ export const helpers = {
       return new Promise(async (resolve, reject) => {
         const token = generateSecureToken(config.device_token_length);
         db.run(
-          'INSERT INTO device_tokens (token, issuedAt, lastUsed) VALUES (?, unixepoch("now"), unixepoch("now"));',
+          "INSERT INTO device_tokens (token, issuedAt, lastUsed) VALUES (?, unixepoch('now'), unixepoch('now'));",
           token,
           function (err: Error | null) {
+            if (err) {
+              console.error(err);
+              return reject();
+            }
             db.get(
               'SELECT * FROM device_tokens WHERE token = ? AND id = ?',
               [token, this.lastID],
@@ -168,6 +206,42 @@ export const helpers = {
               return reject(err);
             }
             resolve(this.changes > 0);
+          },
+        );
+      });
+    },
+    async generate(totalUses: number, duration?: number): Promise<enroll_code> {
+      return new Promise(async (resolve, reject) => {
+        duration =
+          duration == undefined ? config.enroll_code_duration / 1000 : duration;
+
+        const token = generateSecureToken(
+          config.enroll_code_length,
+          '0123456789',
+        );
+        db.run(
+          "INSERT INTO enroll_codes (code, usesRemaining, issuedAt, validUntil) VALUES (?, ?, unixepoch('now'), unixepoch('now') + ?);",
+          [token, totalUses, duration],
+          function (err: Error | null) {
+            if (err) {
+              console.error(err);
+              return reject();
+            }
+            db.get(
+              'SELECT * FROM enroll_codes WHERE code = ? AND id = ?',
+              [token, this.lastID],
+              function (err, row: enroll_code) {
+                if (err) {
+                  console.error(err);
+                  return reject();
+                }
+                if (row == undefined) {
+                  console.error(err);
+                  return reject();
+                }
+                return resolve(row);
+              },
+            );
           },
         );
       });

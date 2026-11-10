@@ -1,4 +1,9 @@
-import express from 'express';
+import express, {
+  Router,
+  type Request,
+  type Response,
+  type NextFunction,
+} from 'express';
 import path from 'path';
 import expressLayouts from 'express-ejs-layouts';
 
@@ -8,7 +13,6 @@ import adminRoutes from './routes/adminRoutes.ts';
 import enrollRoutes from './routes/enrollRoutes.ts';
 import timetableRoutes from './routes/timetableRoutes.ts';
 import userRoutes from './routes/userRoutes.ts';
-
 
 import { errorHandler } from './middlewares/errorHandler.ts';
 import { deviceAuthHandler } from './middlewares/deviceAuthHandler.ts';
@@ -26,6 +30,14 @@ const deviceApiRouter = express.Router();
   deviceApiRouter.use('/timetable', timetableRoutes);
   deviceApiRouter.use('/user', userRoutes);
   deviceApiRouter.use('/enroll', enrollRoutes);
+
+  // catch all 404
+  deviceApiRouter.use((req: Request, res: Response) => {
+    res.status(404).json({
+      status: 404,
+      message: `Can not ${req.method} /api${req.path}`,
+    });
+  });
 }
 const adminApiRouter = express.Router();
 {
@@ -35,8 +47,17 @@ const adminApiRouter = express.Router();
 
   // Only parse after authentication
   adminApiRouter.use(express.json());
+
   // Admin API routes
   adminApiRouter.use('/', adminRoutes);
+
+  // catch all 404
+  adminApiRouter.use((req: Request, res: Response) => {
+    res.status(404).json({
+      status: 404,
+      message: `Can not ${req.method} /api/admin${req.path}`,
+    });
+  });
 }
 
 const app = express();

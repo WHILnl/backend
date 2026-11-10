@@ -7,7 +7,34 @@ body {
   color: var(--ctp-mocha-text);
 }
 
-/* Navigation bar styling */
+/* Colors */
+
+.action-danger {
+  color: var(--ctp-mocha-red);
+}
+
+/* Element Styling */
+button {
+  padding: 5px 8px;
+  border: none;
+  border-radius: 15px;
+  color: var(--ctp-mocha-text);
+  background-color: var(--ctp-mocha-surface1);
+}
+button:hover {
+  box-shadow: 1px 2px;
+  /* box-shadow: -1px -2px inset; */
+}
+button:active {
+  box-shadow: 0.5px 1px;
+}
+button[disabled] {
+  color: var(--ctp-mocha-overlay1);
+  box-shadow: 1px 2px inset;
+  cursor: not-allowed;
+}
+
+/* #region Navigation bar styling */
 
 .navbar {
   margin: 0;
@@ -29,10 +56,11 @@ body {
   background-color: var(--ctp-mocha-surface0);
 }
 
-/* General body styling */
+/* #endregion */
+/* #region General body styling */
 
 main {
-  padding: 20px 10px;
+  padding: 15px 10px;
 }
 #app {
   display: flex;
@@ -49,16 +77,33 @@ h1.squish-bottom {
   color: var(--ctp-mocha-subtext0);
 }
 
-/* Footer styling */
+.self-align-right {
+  display: block;
+  align-self: right;
+}
+.button-container {
+  display: flex;
+  justify-content: end;
+  gap: 0.25em;
+}
+
+@media screen and (max-width: 10000px) {
+  .mobile-hidden {
+    display: none;
+  }
+}
+
+/* #endregion */
 
 /* 
     Component styling 
 */
 
-/* card */
+/* #region card */
 .card {
   width: 95%;
   padding: 15px 0;
+  margin: 10px 0;
   border-radius: 15px;
   background-color: var(--ctp-mocha-crust);
 
@@ -67,16 +112,19 @@ h1.squish-bottom {
   justify-content: center;
   align-items: center;
 }
-
-/* table */
-table {
+/* #endregion */
+/* #region table */
+.table-wrapper {
   width: 95%;
   margin: 10px 0;
+  overflow-x: auto;
   border-radius: 15px;
+}
+table {
+  width: 100%;
   background-color: var(--ctp-mocha-surface0);
-  overflow: hidden;
 
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
 
   border-spacing: 0;
@@ -92,6 +140,9 @@ table {
   }
   tbody tr:nth-child(even) td {
     background-color: var(--ctp-mocha-surface1);
+    button {
+      background-color: var(--ctp-mocha-surface2);
+    }
   }
   tr {
     td,
@@ -115,3 +166,5 @@ table {
     }
   }
 }
+
+/* #endregion */
