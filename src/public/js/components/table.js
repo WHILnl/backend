@@ -174,4 +174,9 @@ function updateTable(wrapperDiv, data) {
   }
 }
 
-export { createCallbackButton, createCallbackButtons, createTable, updateTable };
+export {
+  createCallbackButton,
+  createCallbackButtons,
+  createTable,
+  updateTable,
+};

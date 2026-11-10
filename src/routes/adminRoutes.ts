@@ -70,24 +70,20 @@ router.delete('/device_token/:id', (async (req, res, next) => {
         message: ':id must be a number.',
       });
     }
-    db.get(
-      'DELETE FROM device_tokens WHERE id = ?',
-      id,
-      (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({
-            status: 500,
-            message: 'Internal Server Error',
-          });
-        }
-
-        res.status(200).json({
-          status: 200,
-          message: 'Deleted.',
+    db.get('DELETE FROM device_tokens WHERE id = ?', id, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({
+          status: 500,
+          message: 'Internal Server Error',
         });
-      },
-    );
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: 'Deleted.',
+      });
+    });
   } catch (error) {
     next(error);
   }
@@ -230,24 +226,20 @@ router.delete('/enroll_code/:id', (async (req, res, next) => {
         message: ':id must be a number.',
       });
     }
-    db.get(
-      'DELETE FROM enroll_codes WHERE id = ?',
-      id,
-      (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({
-            status: 500,
-            message: 'Internal Server Error',
-          });
-        }
-
-        res.status(200).json({
-          status: 200,
-          message: 'Deleted.',
+    db.get('DELETE FROM enroll_codes WHERE id = ?', id, (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({
+          status: 500,
+          message: 'Internal Server Error',
         });
-      },
-    );
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: 'Deleted.',
+      });
+    });
   } catch (error) {
     next(error);
   }

@@ -49,7 +49,7 @@ const device_token = {
   /**
    * Revoke a token
    * @param {number} id Id of the token to revoke
-   * @returns {Promise<boolean>} If an ok response was received from the server 
+   * @returns {Promise<boolean>} If an ok response was received from the server
    */
   revoke: async (id) => {
     const res = await fetch(`/api/admin/device_token/${id}/revoke`, {
@@ -67,11 +67,7 @@ const enroll_code = {
   getAll: async () => {
     const res = await fetch('/api/admin/enroll_code');
     if (!res.ok) {
-      console.error(
-        'Could not get enroll codes :',
-        res.status,
-        res.statusText,
-      );
+      console.error('Could not get enroll codes :', res.status, res.statusText);
       return;
     }
     const body = await res.json();
