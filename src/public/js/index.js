@@ -10,12 +10,14 @@ import {
 import { device_token, enroll_code } from './api.js';
 
 /**
+ * @template {HTMLElement} T
  * @param {string} id
- * @returns {HTMLDivElement}
+ * @param {new (...args: any[]) => T} type
+ * @returns {T}
  */
-function getDivById(id) {
+function getElementById(id, type) {
   const el = document.getElementById(id);
-  if (el instanceof HTMLDivElement) {
+  if (el instanceof type) {
     return el;
   } else if (el != null) {
     throw Error(`Element with id '${id}' is of type ${el.constructor.name}.`);
@@ -24,9 +26,12 @@ function getDivById(id) {
   }
 }
 
-const appContainer = getDivById('app');
-const deviceTokenContainer = getDivById('device_token_card');
-const enrollCodeContainer = getDivById('enroll_code_card');
+const appContainer = getElementById('app', HTMLDivElement);
+const deviceTokenContainer = getElementById(
+  'device_token_card',
+  HTMLDivElement,
+);
+const enrollCodeContainer = getElementById('enroll_code_card', HTMLDivElement);
 
 // #region device tokens
 const refreshDeviceTokenTableButton = createCallbackButton(
