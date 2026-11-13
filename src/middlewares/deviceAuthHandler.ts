@@ -1,6 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 
 import { db, helpers } from '../models/db.ts';
+import type { device_token } from '../models/db_tables.ts';
 
 function unauthenticated(res: Response, msg?: string) {
   res.status(401).json({
@@ -30,11 +31,15 @@ export const deviceAuthHandler = async (
     );
   }
   const token: string = authHeader.substring(firstSpace + 1);
-  const valid: boolean =
-    await helpers.device_token.validateAndUpdateLastUsed(token);
-  if (!valid) {
+  const validatedToken = await helpers.device_token.validateAndUpdateLastUsed(token);
+  if (!validatedToken) {
     unauthenticated(res);
     return;
+  }
+
+  //@ts-ignore
+  req.session = {
+    token: validatedToken
   }
 
   next();

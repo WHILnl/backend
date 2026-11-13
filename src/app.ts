@@ -13,31 +13,35 @@ import adminRoutes from './routes/adminRoutes.ts';
 import enrollRoutes from './routes/enrollRoutes.ts';
 import timetableRoutes from './routes/timetableRoutes.ts';
 import userRoutes from './routes/userRoutes.ts';
+import deviceMeRoutes from './routes/deviceMeRoutes.ts';
 
 import { errorHandler } from './middlewares/errorHandler.ts';
 import { deviceAuthHandler } from './middlewares/deviceAuthHandler.ts';
 
+const handler404 = (req: Request, res: Response) => {
+    res.status(404).json({
+      status: 404,
+      message: `Can not ${req.method} /api/admin${req.path}`,
+    });
+  }
+
 const deviceApiRouter = express.Router();
 {
+
+
   // Api router
   // Check authentication
   deviceApiRouter.use(deviceAuthHandler);
 
-  // Only parse after authentication
   deviceApiRouter.use(express.json());
 
   // Device API routes
   deviceApiRouter.use('/timetable', timetableRoutes);
   deviceApiRouter.use('/user', userRoutes);
-  deviceApiRouter.use('/enroll', enrollRoutes);
+  deviceApiRouter.use('/me', deviceMeRoutes);
 
   // catch all 404
-  deviceApiRouter.use((req: Request, res: Response) => {
-    res.status(404).json({
-      status: 404,
-      message: `Can not ${req.method} /api${req.path}`,
-    });
-  });
+  deviceApiRouter.use(handler404);
 }
 const adminApiRouter = express.Router();
 {
@@ -52,18 +56,17 @@ const adminApiRouter = express.Router();
   adminApiRouter.use('/', adminRoutes);
 
   // catch all 404
-  adminApiRouter.use((req: Request, res: Response) => {
-    res.status(404).json({
-      status: 404,
-      message: `Can not ${req.method} /api/admin${req.path}`,
-    });
-  });
+  deviceApiRouter.use(handler404);
 }
 
 const app = express();
 
 // use api routers
 app.use('/api/admin', adminApiRouter);
+
+app.use('/api/enroll', express.json());
+app.use('/api/enroll', enrollRoutes); // prevent getting the auth from device api
+
 app.use('/api', deviceApiRouter);
 
 // admin frontend

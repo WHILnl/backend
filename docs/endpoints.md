@@ -7,6 +7,16 @@ All endpoints can return a 500 or a 401 if an invalid token is given.
 HTTP Header
 `Authorization: Bearer <token>`
 
+### `GET /me`
+**200**
+data:
+```json
+{
+  "id": "number",
+  "issuedAt": "number" // unix epoch in sec
+}
+```
+
 ### `GET /user/:user_id`
 
 **200** \
@@ -21,14 +31,19 @@ data: [Timetable](./definitions.md#timetable)\
 **400** \
 **404**
 
-### `POST /enroll/:user_id`
+### `POST /enroll/`
+```jsonc
+{
+  "enroll_code": "string" // the N-digit enroll code, lpadded with zeros
+}
+```
 
 **200** \
 data:
-```json
+```jsonc
 {
   "token_id": "number",
-  "issued_at": "number unix epoch in sec",
+  "issued_at": "number", // unix epoch in sec
   "token": "string"
 }
 ```

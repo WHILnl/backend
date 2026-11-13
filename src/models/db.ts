@@ -76,7 +76,7 @@ db.run(
 
 export const helpers = {
   device_token: {
-    async validate(token: string): Promise<boolean> {
+    async validate(token: string): Promise<device_token|null> {
       return new Promise((resolve, reject) => {
         db.get(
           'SELECT * FROM device_tokens WHERE token = ?',
@@ -87,14 +87,14 @@ export const helpers = {
               return reject();
             }
             if (row == undefined) {
-              return resolve(false);
+              return resolve(null);
             }
 
             if (
               Date.now() / 1000 - row.lastUsed >
               config.device_token_timeout / 1000
             ) {
-              resolve(false);
+              resolve(null);
               db.run(
                 'UPDATE device_tokens SET revoked = true WHERE token = ?',
                 token,
@@ -106,7 +106,7 @@ export const helpers = {
                 },
               );
             } else {
-              resolve(row.revokedAt == null);
+              resolve(row.revokedAt == null ? row : null);
             }
             reject('Reached unreachable code for this promise');
           },
@@ -125,13 +125,13 @@ export const helpers = {
         },
       );
     },
-    async validateAndUpdateLastUsed(token: string): Promise<boolean> {
+    async validateAndUpdateLastUsed(token: string): Promise<device_token|null> {
       return new Promise(async (resolve, reject) => {
-        const valid = await helpers.device_token.validate(token);
-        if (valid) {
+        const validatedToken = await helpers.device_token.validate(token);
+        if (validatedToken != null) {
           helpers.device_token.updateLastUsed(token);
         }
-        resolve(valid);
+        resolve(validatedToken);
       });
     },
 
